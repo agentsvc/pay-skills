@@ -1474,6 +1474,10 @@
                     "type": "string",
                     "description": "Single address (alternative to tokens)"
                   },
+                  "tokenAddress": {
+                    "type": "string",
+                    "description": "Alias of token"
+                  },
                   "chain": {
                     "type": "string",
                     "description": "base, ethereum, bsc, arbitrum, polygon, avalanche, optimism or solana. Default base"
@@ -1488,6 +1492,11 @@
                   {
                     "required": [
                       "token"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "tokenAddress"
                     ]
                   }
                 ]
