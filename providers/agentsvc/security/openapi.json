@@ -171,7 +171,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success. Payment settled on-chain; receipt in PAYMENT-RESPONSE header.",
+            "description": "Success: the result is delivered. payment.status is \"settled\" when the USDC transfer is on-chain, or \"settling\" when it completes in the background about a second later (no transaction hash yet). Send header X-Payment-Settle: sync to wait for the hash; the receipt is also in the PAYMENT-RESPONSE header.",
             "headers": {
               "PAYMENT-RESPONSE": {
                 "schema": {
@@ -201,6 +201,18 @@
                     "data": {
                       "type": "object",
                       "properties": {
+                        "grade": {
+                          "type": "string",
+                          "description": "A (safest) to F"
+                        },
+                        "label": {
+                          "type": "string",
+                          "description": "SAFE, CAUTION, RISKY, DANGER or UNVERIFIED"
+                        },
+                        "score": {
+                          "type": "integer",
+                          "description": "0 to 100, higher is safer"
+                        },
                         "chain": {
                           "type": "string"
                         },
@@ -800,7 +812,7 @@
                     "amount_usdc": 0.009,
                     "transaction": null,
                     "network": "eip155:8453",
-                    "payer": "0x…"
+                    "payer": "0x\u2026"
                   }
                 }
               }
@@ -946,8 +958,24 @@
                       "solana"
                     ],
                     "default": "base"
+                  },
+                  "tokenAddress": {
+                    "type": "string",
+                    "description": "Alias of token"
                   }
-                }
+                },
+                "anyOf": [
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "tokenAddress"
+                    ]
+                  }
+                ]
               },
               "example": {
                 "token": "0x4ed4E862860beD51a9570b96d89aF5E1B0Efefed",
@@ -958,7 +986,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success. Payment settled on-chain; receipt in PAYMENT-RESPONSE header.",
+            "description": "Success: the result is delivered. payment.status is \"settled\" when the USDC transfer is on-chain, or \"settling\" when it completes in the background about a second later (no transaction hash yet). Send header X-Payment-Settle: sync to wait for the hash; the receipt is also in the PAYMENT-RESPONSE header.",
             "headers": {
               "PAYMENT-RESPONSE": {
                 "schema": {
@@ -1284,7 +1312,7 @@
                     "amount_usdc": 0.009,
                     "transaction": null,
                     "network": "eip155:8453",
-                    "payer": "0x…"
+                    "payer": "0x\u2026"
                   }
                 }
               }
@@ -1438,7 +1466,9 @@
                           ]
                         }
                       ]
-                    }
+                    },
+                    "minItems": 1,
+                    "maxItems": 5
                   },
                   "token": {
                     "type": "string",
@@ -1448,7 +1478,19 @@
                     "type": "string",
                     "description": "base, ethereum, bsc, arbitrum, polygon, avalanche, optimism or solana. Default base"
                   }
-                }
+                },
+                "anyOf": [
+                  {
+                    "required": [
+                      "tokens"
+                    ]
+                  },
+                  {
+                    "required": [
+                      "token"
+                    ]
+                  }
+                ]
               },
               "example": {
                 "tokens": [
@@ -1462,7 +1504,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success. Payment settled on-chain; receipt in PAYMENT-RESPONSE header.",
+            "description": "Success: the result is delivered. payment.status is \"settled\" when the USDC transfer is on-chain, or \"settling\" when it completes in the background about a second later (no transaction hash yet). Send header X-Payment-Settle: sync to wait for the hash; the receipt is also in the PAYMENT-RESPONSE header.",
             "headers": {
               "PAYMENT-RESPONSE": {
                 "schema": {
@@ -1598,7 +1640,7 @@
                     "amount_usdc": 0.004,
                     "transaction": null,
                     "network": "eip155:8453",
-                    "payer": "0x…"
+                    "payer": "0x\u2026"
                   }
                 }
               }
@@ -1732,11 +1774,13 @@
                 "properties": {
                   "text": {
                     "type": "string",
-                    "description": "Untrusted text to check, max 20,000 chars"
+                    "description": "Untrusted text to check, max 20,000 chars",
+                    "maxLength": 20000
                   },
                   "context": {
                     "type": "string",
-                    "description": "Optional: what the agent is doing, max 300 chars"
+                    "description": "Optional: what the agent is doing, max 300 chars",
+                    "maxLength": 300
                   }
                 }
               },
@@ -1748,7 +1792,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success. Payment settled on-chain; receipt in PAYMENT-RESPONSE header.",
+            "description": "Success: the result is delivered. payment.status is \"settled\" when the USDC transfer is on-chain, or \"settling\" when it completes in the background about a second later (no transaction hash yet). Send header X-Payment-Settle: sync to wait for the hash; the receipt is also in the PAYMENT-RESPONSE header.",
             "headers": {
               "PAYMENT-RESPONSE": {
                 "schema": {
@@ -1920,7 +1964,7 @@
                     "amount_usdc": 0.004,
                     "transaction": null,
                     "network": "eip155:8453",
-                    "payer": "0x…"
+                    "payer": "0x\u2026"
                   }
                 }
               }
@@ -2054,11 +2098,13 @@
                 "properties": {
                   "text": {
                     "type": "string",
-                    "description": "The message to check, max 8,000 chars"
+                    "description": "The message to check, max 8,000 chars",
+                    "maxLength": 8000
                   },
                   "sender": {
                     "type": "string",
-                    "description": "Optional: sender name or handle as shown, max 200 chars"
+                    "description": "Optional: sender name or handle as shown, max 200 chars",
+                    "maxLength": 200
                   },
                   "channel": {
                     "type": "string",
@@ -2075,7 +2121,7 @@
         },
         "responses": {
           "200": {
-            "description": "Success. Payment settled on-chain; receipt in PAYMENT-RESPONSE header.",
+            "description": "Success: the result is delivered. payment.status is \"settled\" when the USDC transfer is on-chain, or \"settling\" when it completes in the background about a second later (no transaction hash yet). Send header X-Payment-Settle: sync to wait for the hash; the receipt is also in the PAYMENT-RESPONSE header.",
             "headers": {
               "PAYMENT-RESPONSE": {
                 "schema": {
@@ -2314,7 +2360,7 @@
                     "amount_usdc": 0.003,
                     "transaction": null,
                     "network": "eip155:8453",
-                    "payer": "0x…"
+                    "payer": "0x\u2026"
                   }
                 }
               }
